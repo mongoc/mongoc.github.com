@@ -1,28 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>透过现象看本质</title>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
   
-  <link href="/atom.xml" rel="self"/>
+  <title>进制之间转换 | 透过现象看本质</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进制之间转换">
+<meta property="og:url" content="http://mongoc.com/2016/12/08/进制之间转换/index.html">
+<meta property="og:site_name" content="透过现象看本质">
+<meta property="og:description" content="第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。">
+<meta property="og:updated_time" content="2016-12-08T11:11:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进制之间转换">
+<meta name="twitter:description" content="第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。">
   
-  <link href="http://mongoc.com/"/>
-  <updated>2016-12-08T11:11:31.000Z</updated>
-  <id>http://mongoc.com/</id>
+    <link rel="alternative" href="/atom.xml" title="透过现象看本质" type="application/atom+xml">
   
-  <author>
-    <name>MongoC</name>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-进制之间转换" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
     
-  </author>
+      <header class="article-header">
+        
   
-  <generator uri="http://hexo.io/">Hexo</generator>
+    <h1 class="article-title" itemprop="name">
+      进制之间转换
+    </h1>
   
-  <entry>
-    <title>进制之间转换</title>
-    <link href="http://mongoc.com/2016/12/08/%E8%BF%9B%E5%88%B6%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/"/>
-    <id>http://mongoc.com/2016/12/08/进制之间转换/</id>
-    <published>2016-12-08T09:30:49.000Z</published>
-    <updated>2016-12-08T11:11:31.000Z</updated>
+
+      </header>
     
-    <content type="html"><![CDATA[<p>第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。<br><a id="more"></a></p>
+    <div class="article-meta">
+      <a href="/2016/12/08/进制之间转换/" class="article-date">
+  <time datetime="2016-12-08T09:30:49.000Z" itemprop="datePublished">2016-12-08</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。<br><a id="more"></a></p>
 <hr>
 <h4 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h4><p>现在需要把110101转为十进制，那么需要怎么转换呢？只需要如下进行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  1  0  1  0  1   //我们把这个要转换的拉开，想象成数组</div><div class="line">数据下标:  5  4  3  2  1  0   //下面的是数字在数组中的下标,只是这个下标是倒着排列</div><div class="line">计算公式:  2^5*1 + 2^4*1 + 2^3*0 + 2^2*1 + 2^1*0 + 2^0*1  //这里的^5表示2的5次方，其他类推</div><div class="line">计算结果:  32 + 16 + 0 + 4 + 0 + 1 = 53    //2^0等于1</div></pre></td></tr></table></figure></p>
 <blockquote>
@@ -42,47 +72,79 @@
 <p>计算的思路都是一致的。记住思路就可以了。</p>
 <p>至于十进制转十六进制道理也都是一样的。</p>
 <p>在JS中如果想把二进制转为十进制可以使用<code>parseInt</code>, 如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">parseInt(&apos;110101&apos;, 2)   //输出53  二进制转十进制</div><div class="line">parseInt(&apos;67&apos;, 8)       //输出55  八进制转十进制</div><div class="line">parseInt(&apos;aa&apos;, 16)      //输出170 十六进制转十进制</div><div class="line">parseInt(&apos;69&apos;, 8)       //输出6   猜猜为什么</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="基础" scheme="http://mongoc.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-  </entry>
+
+      
+
+      
+        
+    </div>
+  </div>
   
-  <entry>
-    <title>Hello World</title>
-    <link href="http://mongoc.com/2016/12/08/hello-world/"/>
-    <id>http://mongoc.com/2016/12/08/hello-world/</id>
-    <published>2016-12-08T06:59:31.000Z</published>
-    <updated>2016-12-08T11:13:21.000Z</updated>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<a id="more"></a>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="Hexo" scheme="http://mongoc.com/tags/Hexo/"/>
-    
-  </entry>
+<nav id="article-nav">
   
-</feed>
+  
+    <a href="/2016/12/08/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+      
+        <li><a href="/atom.xml" target="_blank"><i class="icon icon-rss"></i></a></li>
+      
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2016 MongoC 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/Alex-fun/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">RSS</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
