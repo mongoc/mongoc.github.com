@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://mongoc.com/2016/12/08/1-2-3-map-parseInt-答案是多少？/index.html">
 <meta property="og:site_name" content="透过问题看本质">
 <meta property="og:description" content="这个问题网络上很多人都问过，很多人也都给出解答了，搜索看了下发下很多答案都是一知半解。抱着透过问题看本质的心态仔细的看了下资料，总算是弄明白了最总的结果。并且弄明白了为什么会这样。">
-<meta property="og:updated_time" content="2016-12-08T15:27:28.000Z">
+<meta property="og:updated_time" content="2016-12-09T09:03:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[1, 2, 3].map(parseInt) 答案是多少？">
 <meta name="twitter:description" content="这个问题网络上很多人都问过，很多人也都给出解答了，搜索看了下发下很多答案都是一知半解。抱着透过问题看本质的心态仔细的看了下资料，总算是弄明白了最总的结果。并且弄明白了为什么会这样。">
@@ -54,7 +54,7 @@
       
         <p>这个问题网络上很多人都问过，很多人也都给出解答了，搜索看了下发下很多答案都是一知半解。抱着透过问题看本质的心态仔细的看了下资料，总算是弄明白了最总的结果。并且弄明白了为什么会这样。<br><a id="more"></a></p>
 <hr>
-<h4 id="说说map"><a href="#说说map" class="headerlink" title="说说map"></a>说说map</h4><p>map是数组原生自带的方法。该方法的定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var new_array = array.map(function callback(currentValue,index,arr), thisValue)</div><div class="line">callback  必选</div><div class="line">    currentValue    当前元素的值         必选</div><div class="line">    index           当前元素的索引       可选</div><div class="line">    arr             当前元素所属的数组    可选</div><div class="line">thisValue 可选，表示回调内部this的指向, 浏览器端不指定表示window</div></pre></td></tr></table></figure></p>
+<h4 id="说说map"><a href="#说说map" class="headerlink" title="说说map"></a>说说map</h4><p>map是数组原生自带的方法。该方法的定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var new_array = array.map(function callback(currentValue,index,arr), thisValue)</div><div class="line">callback  必选</div><div class="line">    currentValue    当前元素的值         必选</div><div class="line">    index           当前元素的索引       可选</div><div class="line">    arr             当前元素所属的数组    可选</div><div class="line">thisValue 可选，表示回调内部this的指向， 浏览器端不指定表示window</div></pre></td></tr></table></figure></p>
 <p>这里传递currentValue表示当前数组中的值，所有的值都会被回调处理。比如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3, 4];</div><div class="line">var newArr = arr.map(function(cv, i, ar)&#123;</div><div class="line">    console.log(ar);</div><div class="line">    return cv * 2;</div><div class="line">&#125;);</div><div class="line">console.log(newArr);    //打印：[ 2, 4, 6, 8 ]</div></pre></td></tr></table></figure></p>
 <p>这里演示下<code>thisValue</code>的作用。如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">function Person(arr) &#123;</div><div class="line">    this.arr = arr;</div><div class="line">    this.show = function() &#123;</div><div class="line">        var newArr = arr.map(function(cv, i, ar) &#123;</div><div class="line">            console.log(this);   //这里打印的是Window对象</div><div class="line">            return cv * 2;</div><div class="line">        &#125;);</div><div class="line">        console.log(newArr);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">var p = new Person([1,2,3]);</div><div class="line">p.show();</div></pre></td></tr></table></figure></p>
 <p>当然也可以指定为其他，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3, 4];</div><div class="line">var obj = &#123;</div><div class="line">    num: 23</div><div class="line">&#125;;</div><div class="line">var newArr = arr.map(function(cv, i, ar) &#123;</div><div class="line">    console.log(this);    //这里打印的就是obj对象</div><div class="line">    return cv * 2;</div><div class="line">&#125;, obj);</div><div class="line">console.log(newArr);</div></pre></td></tr></table></figure></p>
@@ -69,8 +69,8 @@
 <p>在没有指定基数，或者基数为 0 的情况下，JavaScript 作如下处理：</p>
 <blockquote>
 <ul>
-<li>如果字符串 string 以”0x”或者”0X”开头, 则基数是16 (16进制).</li>
-<li>如果字符串 string 以”0”开头,基数是8（八进制）或者10（十进制），那么具体是哪个基数由实现环境决定。<br> ECMAScript 5 规定使用10，但是并不是所有的浏览器都遵循这个规定。因此，永远都要明确给出radix参数的值。</li>
+<li>如果字符串 string 以”0x”或者”0X”开头， 则基数是16 (16进制).</li>
+<li>如果字符串 string 以”0”开头，基数是8（八进制）或者10（十进制），那么具体是哪个基数由实现环境决定。<br> ECMAScript 5 规定使用10，但是并不是所有的浏览器都遵循这个规定。因此，永远都要明确给出radix参数的值。</li>
 <li>如果字符串 string 以其它任何值开头，则基数是10 (十进制)。</li>
 <li>如果第一个字符不能被转换成数字，parseInt返回NaN。</li>
 </ul>
@@ -84,7 +84,7 @@
 <blockquote>
 <p>计算方法在<a href="/2016/12/08/进制之间转换/">进制转换</a>里面提过。</p>
 </blockquote>
-<p>以此我们分析第二个<code>parseInt(&#39;12a&#39;, 2)</code>。同样把字符串从左往右看，1在二进制下表示1，2在二进制下没法表示所以NaN,一旦遇到NaN就返回前面的数字，所以只有一个1，而1在十进制下也刚好是1。</p>
+<p>以此我们分析第二个<code>parseInt(&#39;12a&#39;, 2)</code>。同样把字符串从左往右看，1在二进制下表示1，2在二进制下没法表示所以NaN，一旦遇到NaN就返回前面的数字，所以只有一个1，而1在十进制下也刚好是1。</p>
 <p>第三个<code>parseInt(&#39;12a&#39;, 8)</code>。同样往右看，1在八进制下表示1，2在八进制下表示2，a在八进制下无法表示所以NaN。开始计算结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  2</div><div class="line">数据下标:  1  0</div><div class="line">计算公式:  8^1*1 + 8^0*2</div><div class="line">计算结果:  8 + 2 = 10</div></pre></td></tr></table></figure></p>
 <p>所以<code>parseInt(&#39;12a&#39;, 8)</code>返回10.</p>
 <p>再看第四个<code>parseInt(&#39;12a&#39;, 16)</code>。往右看1在十六进制下表示1，2在十六进制下表示2，a在十六进制下表示10。计算如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  2  10</div><div class="line">数据下标:  2  1  0</div><div class="line">计算公式:  16^2*1 + 16^1*2 + 16^0*10</div><div class="line">计算结果:  256 + 32 + 10 = 298</div></pre></td></tr></table></figure></p>
@@ -104,6 +104,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/12/09/连续赋值中a-x等于几/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          连续赋值中a.x等于几?
+        
+      </div>
+    </a>
   
   
     <a href="/2016/12/08/进制之间转换/" id="article-nav-older" class="article-nav-link-wrap">

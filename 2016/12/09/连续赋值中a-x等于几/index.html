@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>连续赋值中a.x等于几? | 透过问题看本质</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是原文地址，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="连续赋值中a.x等于几?">
+<meta property="og:url" content="http://mongoc.com/2016/12/09/连续赋值中a-x等于几/index.html">
+<meta property="og:site_name" content="透过问题看本质">
+<meta property="og:description" content="今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是原文地址，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。">
+<meta property="og:updated_time" content="2016-12-09T09:05:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="连续赋值中a.x等于几?">
+<meta name="twitter:description" content="今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是原文地址，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。">
+  
+    <link rel="alternative" href="/atom.xml" title="透过问题看本质" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-连续赋值中a-x等于几" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      连续赋值中a.x等于几?
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2016/12/09/连续赋值中a-x等于几/" class="article-date">
+  <time datetime="2016-12-09T08:06:56.000Z" itemprop="datePublished">2016-12-09</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是<a href="http://www.cnblogs.com/xxcanghai/p/4998076.html" target="_blank" rel="external">原文地址</a>，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。</p>
+<a id="more"></a>
+<hr>
+<h4 id="看看原问题"><a href="#看看原问题" class="headerlink" title="看看原问题"></a>看看原问题</h4><p>原题是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;</div><div class="line">a.x = a = &#123;n:2&#125;;</div><div class="line">console.log(a.x); // 输出多少</div></pre></td></tr></table></figure></p>
+<p>我算错了，我以为会是<code>{n:2}</code>。结果不是。这里引用下别人的理解:</p>
+<blockquote>
+<p>所以我认为这段代码  a.x=a={n:2};  的逻辑是：<br>1、在执行前，会先将a和a.x中的a的引用地址都取出来，此值他们都指向{n:1}<br>2、在内存中创建一个新对象{n:2}<br>3、执行a={n:2}，将a的引用从指向{n:1}改为指向新的{n:2}<br>4、执行a.x=a，此时a已经指向了新对象，而a.x因为在执行前保留了原引用，所以a.x的a依然指向原先的{n:1}对象，所以给原对象新增一个属性x，内容为{n:2}也就是现在a<br>5、语句执行结束，原对象由{n:1}变成{n:1,x:{n:2}}，而原对象因为无人再引用他，所以被GC回收，当前a指向新对象{n:2}<br>6、所以就有了文章开头的运行结果，再执行a.x，自然就是undefined了</p>
+</blockquote>
+<p>这里作者的的理解也都是对的，只是首先运算的顺序不对。</p>
+<hr>
+<h4 id="我的想法"><a href="#我的想法" class="headerlink" title="我的想法"></a>我的想法</h4><p>我们先看个简单的例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = 3;</div><div class="line">a = b = 4;</div><div class="line">console.log(a, b);     //4 4</div></pre></td></tr></table></figure></p>
+<p>正常的连续赋值没有问题，正常的连续赋值，js会从右边开始运算，并且把右边的值或者表达式赋值给左边。上边的例子没有问题。</p>
+<p>我们分析下原题。首先我们拆分下上面的代码(我比较喜欢这样去理解代码)，如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;               </div><div class="line">var b = a;</div><div class="line">a.x = a = &#123;n:2&#125;;            </div><div class="line">console.log(a.x);            //undefined</div><div class="line">console.log(b);              //输出&#123;n:1, x:&#123;n:2&#125;&#125;</div></pre></td></tr></table></figure></p>
+<p>这里我直接打印了答案，我记录下我的猜想。</p>
+<p><strong>JS中使用var声明变量如果不赋值默认是undefined。</strong><br><strong>JS中访问对象不存在的属性时会自动创建这个属性并且赋值为undefined</strong></p>
+<p>首先<code>a.x = a = {n:2}</code>的执行顺序确实是从右向左，但是这个里面的有一个特殊的地方就是那个<code>.</code>，因为这个导致了运算优先级变了。变成了先执行<code>成员访问</code>运算，再执行赋值运算，所以会先执行左边的<code>a.x</code>运算。</p>
+<p>这里是<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence" target="_blank" rel="external">运算优先级说明</a>。这里可以看到成员访问的优先级是大于赋值运算优先级的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;               //我们把&#123;n:1&#125;认为是obj，便于理解</div><div class="line">var b = a;</div><div class="line">a.x = a = &#123;n:2&#125;;             //我们把&#123;n:2&#125;认为是obj1</div><div class="line"></div><div class="line">这里的a=&#123;n:1&#125;，也就是相当于a=obj，b=a也就是b=obj， 所以b=a=obj。</div><div class="line"></div><div class="line">第一步运算a.x并且a.x等于undefined，也就是相当于x在obj上面，即obj.x=undefined</div><div class="line">第二步运算a=&#123;n:2&#125;， 也就是相当于把a指向obj的指向改成了指向obj1</div><div class="line">第三步运算a.x=a，因为第二部的原因a执行obj已经不存在了已经是指向obj1了，那么就是在运算obj.x=obj1。</div><div class="line">第四步运算完毕</div></pre></td></tr></table></figure>
+<p>这里因为a最终指向了obj1，并不指向obj，而obj1中没有x属性，那么访问a.x(obj1.x)自然也就是undefind了。而obj一直等于b，所以b就自然是{n:1,x:{n:2}}了。</p>
+<p>透过问题看本质之后在理解反过来的操作也就是一样的结果了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">a = a.x = &#123;n:2&#125;</div><div class="line"></div><div class="line">可以尝试思考这个:</div><div class="line">var a = &#123;n:1&#125;;</div><div class="line">var c = &#123;n:3&#125;;</div><div class="line">var b = a;</div><div class="line">var d = c;</div><div class="line">console.log(a.x, c.y, a, b, c, d);  //输出结果,全选页面文字查看答案</div></pre></td></tr></table></figure></p>
+<p><i style="color:#fff"><br>undefined<br>{ n: 4 }<br>{ n: 4 }<br>{ n: 1, x: { n: 4 } }<br>{ n: 3, y: { n: 4 } }<br>{ n: 3, y: { n: 4 } }</i></p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/12/08/1-2-3-map-parseInt-答案是多少？/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[1, 2, 3].map(parseInt) 答案是多少？</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+      
+        <li><a href="/atom.xml" target="_blank"><i class="icon icon-rss"></i></a></li>
+      
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2016 MongoC 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/Alex-fun/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">RSS</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

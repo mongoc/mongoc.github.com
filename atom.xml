@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://mongoc.com/"/>
-  <updated>2016-12-08T15:27:28.000Z</updated>
+  <updated>2016-12-09T09:05:23.000Z</updated>
   <id>http://mongoc.com/</id>
   
   <author>
@@ -16,15 +16,58 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>连续赋值中a.x等于几?</title>
+    <link href="http://mongoc.com/2016/12/09/%E8%BF%9E%E7%BB%AD%E8%B5%8B%E5%80%BC%E4%B8%ADa-x%E7%AD%89%E4%BA%8E%E5%87%A0/"/>
+    <id>http://mongoc.com/2016/12/09/连续赋值中a-x等于几/</id>
+    <published>2016-12-09T08:06:56.000Z</published>
+    <updated>2016-12-09T09:05:23.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是<a href="http://www.cnblogs.com/xxcanghai/p/4998076.html" target="_blank" rel="external">原文地址</a>，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。</p>
+<a id="more"></a>
+<hr>
+<h4 id="看看原问题"><a href="#看看原问题" class="headerlink" title="看看原问题"></a>看看原问题</h4><p>原题是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;</div><div class="line">a.x = a = &#123;n:2&#125;;</div><div class="line">console.log(a.x); // 输出多少</div></pre></td></tr></table></figure></p>
+<p>我算错了，我以为会是<code>{n:2}</code>。结果不是。这里引用下别人的理解:</p>
+<blockquote>
+<p>所以我认为这段代码  a.x=a={n:2};  的逻辑是：<br>1、在执行前，会先将a和a.x中的a的引用地址都取出来，此值他们都指向{n:1}<br>2、在内存中创建一个新对象{n:2}<br>3、执行a={n:2}，将a的引用从指向{n:1}改为指向新的{n:2}<br>4、执行a.x=a，此时a已经指向了新对象，而a.x因为在执行前保留了原引用，所以a.x的a依然指向原先的{n:1}对象，所以给原对象新增一个属性x，内容为{n:2}也就是现在a<br>5、语句执行结束，原对象由{n:1}变成{n:1,x:{n:2}}，而原对象因为无人再引用他，所以被GC回收，当前a指向新对象{n:2}<br>6、所以就有了文章开头的运行结果，再执行a.x，自然就是undefined了</p>
+</blockquote>
+<p>这里作者的的理解也都是对的，只是首先运算的顺序不对。</p>
+<hr>
+<h4 id="我的想法"><a href="#我的想法" class="headerlink" title="我的想法"></a>我的想法</h4><p>我们先看个简单的例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var a = 3;</div><div class="line">a = b = 4;</div><div class="line">console.log(a, b);     //4 4</div></pre></td></tr></table></figure></p>
+<p>正常的连续赋值没有问题，正常的连续赋值，js会从右边开始运算，并且把右边的值或者表达式赋值给左边。上边的例子没有问题。</p>
+<p>我们分析下原题。首先我们拆分下上面的代码(我比较喜欢这样去理解代码)，如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;               </div><div class="line">var b = a;</div><div class="line">a.x = a = &#123;n:2&#125;;            </div><div class="line">console.log(a.x);            //undefined</div><div class="line">console.log(b);              //输出&#123;n:1, x:&#123;n:2&#125;&#125;</div></pre></td></tr></table></figure></p>
+<p>这里我直接打印了答案，我记录下我的猜想。</p>
+<p><strong>JS中使用var声明变量如果不赋值默认是undefined。</strong><br><strong>JS中访问对象不存在的属性时会自动创建这个属性并且赋值为undefined</strong></p>
+<p>首先<code>a.x = a = {n:2}</code>的执行顺序确实是从右向左，但是这个里面的有一个特殊的地方就是那个<code>.</code>，因为这个导致了运算优先级变了。变成了先执行<code>成员访问</code>运算，再执行赋值运算，所以会先执行左边的<code>a.x</code>运算。</p>
+<p>这里是<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence" target="_blank" rel="external">运算优先级说明</a>。这里可以看到成员访问的优先级是大于赋值运算优先级的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var a = &#123;n:1&#125;;               //我们把&#123;n:1&#125;认为是obj，便于理解</div><div class="line">var b = a;</div><div class="line">a.x = a = &#123;n:2&#125;;             //我们把&#123;n:2&#125;认为是obj1</div><div class="line"></div><div class="line">这里的a=&#123;n:1&#125;，也就是相当于a=obj，b=a也就是b=obj， 所以b=a=obj。</div><div class="line"></div><div class="line">第一步运算a.x并且a.x等于undefined，也就是相当于x在obj上面，即obj.x=undefined</div><div class="line">第二步运算a=&#123;n:2&#125;， 也就是相当于把a指向obj的指向改成了指向obj1</div><div class="line">第三步运算a.x=a，因为第二部的原因a执行obj已经不存在了已经是指向obj1了，那么就是在运算obj.x=obj1。</div><div class="line">第四步运算完毕</div></pre></td></tr></table></figure>
+<p>这里因为a最终指向了obj1，并不指向obj，而obj1中没有x属性，那么访问a.x(obj1.x)自然也就是undefind了。而obj一直等于b，所以b就自然是{n:1,x:{n:2}}了。</p>
+<p>透过问题看本质之后在理解反过来的操作也就是一样的结果了:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">a = a.x = &#123;n:2&#125;</div><div class="line"></div><div class="line">可以尝试思考这个:</div><div class="line">var a = &#123;n:1&#125;;</div><div class="line">var c = &#123;n:3&#125;;</div><div class="line">var b = a;</div><div class="line">var d = c;</div><div class="line">console.log(a.x, c.y, a, b, c, d);  //输出结果,全选页面文字查看答案</div></pre></td></tr></table></figure></p>
+<p><i style="color:#fff"><br>undefined<br>{ n: 4 }<br>{ n: 4 }<br>{ n: 1, x: { n: 4 } }<br>{ n: 3, y: { n: 4 } }<br>{ n: 3, y: { n: 4 } }</i></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是&lt;a href=&quot;http://www.cnblogs.com/xxcanghai/p/4998076.html&quot;&gt;原文地址&lt;/a&gt;，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="JavaScript" scheme="http://mongoc.com/tags/JavaScript/"/>
+    
+      <category term="面试" scheme="http://mongoc.com/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
     <title>[1, 2, 3].map(parseInt) 答案是多少？</title>
     <link href="http://mongoc.com/2016/12/08/1-2-3-map-parseInt-%E7%AD%94%E6%A1%88%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%9F/"/>
     <id>http://mongoc.com/2016/12/08/1-2-3-map-parseInt-答案是多少？/</id>
     <published>2016-12-08T11:17:53.000Z</published>
-    <updated>2016-12-08T15:27:28.000Z</updated>
+    <updated>2016-12-09T09:03:46.000Z</updated>
     
     <content type="html"><![CDATA[<p>这个问题网络上很多人都问过，很多人也都给出解答了，搜索看了下发下很多答案都是一知半解。抱着透过问题看本质的心态仔细的看了下资料，总算是弄明白了最总的结果。并且弄明白了为什么会这样。<br><a id="more"></a></p>
 <hr>
-<h4 id="说说map"><a href="#说说map" class="headerlink" title="说说map"></a>说说map</h4><p>map是数组原生自带的方法。该方法的定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var new_array = array.map(function callback(currentValue,index,arr), thisValue)</div><div class="line">callback  必选</div><div class="line">    currentValue    当前元素的值         必选</div><div class="line">    index           当前元素的索引       可选</div><div class="line">    arr             当前元素所属的数组    可选</div><div class="line">thisValue 可选，表示回调内部this的指向, 浏览器端不指定表示window</div></pre></td></tr></table></figure></p>
+<h4 id="说说map"><a href="#说说map" class="headerlink" title="说说map"></a>说说map</h4><p>map是数组原生自带的方法。该方法的定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var new_array = array.map(function callback(currentValue,index,arr), thisValue)</div><div class="line">callback  必选</div><div class="line">    currentValue    当前元素的值         必选</div><div class="line">    index           当前元素的索引       可选</div><div class="line">    arr             当前元素所属的数组    可选</div><div class="line">thisValue 可选，表示回调内部this的指向， 浏览器端不指定表示window</div></pre></td></tr></table></figure></p>
 <p>这里传递currentValue表示当前数组中的值，所有的值都会被回调处理。比如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3, 4];</div><div class="line">var newArr = arr.map(function(cv, i, ar)&#123;</div><div class="line">    console.log(ar);</div><div class="line">    return cv * 2;</div><div class="line">&#125;);</div><div class="line">console.log(newArr);    //打印：[ 2, 4, 6, 8 ]</div></pre></td></tr></table></figure></p>
 <p>这里演示下<code>thisValue</code>的作用。如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">function Person(arr) &#123;</div><div class="line">    this.arr = arr;</div><div class="line">    this.show = function() &#123;</div><div class="line">        var newArr = arr.map(function(cv, i, ar) &#123;</div><div class="line">            console.log(this);   //这里打印的是Window对象</div><div class="line">            return cv * 2;</div><div class="line">        &#125;);</div><div class="line">        console.log(newArr);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">var p = new Person([1,2,3]);</div><div class="line">p.show();</div></pre></td></tr></table></figure></p>
 <p>当然也可以指定为其他，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var arr = [1, 2, 3, 4];</div><div class="line">var obj = &#123;</div><div class="line">    num: 23</div><div class="line">&#125;;</div><div class="line">var newArr = arr.map(function(cv, i, ar) &#123;</div><div class="line">    console.log(this);    //这里打印的就是obj对象</div><div class="line">    return cv * 2;</div><div class="line">&#125;, obj);</div><div class="line">console.log(newArr);</div></pre></td></tr></table></figure></p>
@@ -39,8 +82,8 @@
 <p>在没有指定基数，或者基数为 0 的情况下，JavaScript 作如下处理：</p>
 <blockquote>
 <ul>
-<li>如果字符串 string 以”0x”或者”0X”开头, 则基数是16 (16进制).</li>
-<li>如果字符串 string 以”0”开头,基数是8（八进制）或者10（十进制），那么具体是哪个基数由实现环境决定。<br> ECMAScript 5 规定使用10，但是并不是所有的浏览器都遵循这个规定。因此，永远都要明确给出radix参数的值。</li>
+<li>如果字符串 string 以”0x”或者”0X”开头， 则基数是16 (16进制).</li>
+<li>如果字符串 string 以”0”开头，基数是8（八进制）或者10（十进制），那么具体是哪个基数由实现环境决定。<br> ECMAScript 5 规定使用10，但是并不是所有的浏览器都遵循这个规定。因此，永远都要明确给出radix参数的值。</li>
 <li>如果字符串 string 以其它任何值开头，则基数是10 (十进制)。</li>
 <li>如果第一个字符不能被转换成数字，parseInt返回NaN。</li>
 </ul>
@@ -54,7 +97,7 @@
 <blockquote>
 <p>计算方法在<a href="/2016/12/08/进制之间转换/">进制转换</a>里面提过。</p>
 </blockquote>
-<p>以此我们分析第二个<code>parseInt(&#39;12a&#39;, 2)</code>。同样把字符串从左往右看，1在二进制下表示1，2在二进制下没法表示所以NaN,一旦遇到NaN就返回前面的数字，所以只有一个1，而1在十进制下也刚好是1。</p>
+<p>以此我们分析第二个<code>parseInt(&#39;12a&#39;, 2)</code>。同样把字符串从左往右看，1在二进制下表示1，2在二进制下没法表示所以NaN，一旦遇到NaN就返回前面的数字，所以只有一个1，而1在十进制下也刚好是1。</p>
 <p>第三个<code>parseInt(&#39;12a&#39;, 8)</code>。同样往右看，1在八进制下表示1，2在八进制下表示2，a在八进制下无法表示所以NaN。开始计算结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  2</div><div class="line">数据下标:  1  0</div><div class="line">计算公式:  8^1*1 + 8^0*2</div><div class="line">计算结果:  8 + 2 = 10</div></pre></td></tr></table></figure></p>
 <p>所以<code>parseInt(&#39;12a&#39;, 8)</code>返回10.</p>
 <p>再看第四个<code>parseInt(&#39;12a&#39;, 16)</code>。往右看1在十六进制下表示1，2在十六进制下表示2，a在十六进制下表示10。计算如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  2  10</div><div class="line">数据下标:  2  1  0</div><div class="line">计算公式:  16^2*1 + 16^1*2 + 16^0*10</div><div class="line">计算结果:  256 + 32 + 10 = 298</div></pre></td></tr></table></figure></p>
@@ -84,11 +127,11 @@
     <link href="http://mongoc.com/2016/12/08/%E8%BF%9B%E5%88%B6%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/"/>
     <id>http://mongoc.com/2016/12/08/进制之间转换/</id>
     <published>2016-12-08T09:30:49.000Z</published>
-    <updated>2016-12-08T11:18:59.000Z</updated>
+    <updated>2016-12-09T09:04:03.000Z</updated>
     
     <content type="html"><![CDATA[<p>第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。<br><a id="more"></a></p>
 <hr>
-<h4 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h4><p>现在需要把110101转为十进制，那么需要怎么转换呢？只需要如下进行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  1  0  1  0  1   //我们把这个要转换的拉开，想象成数组</div><div class="line">数据下标:  5  4  3  2  1  0   //下面的是数字在数组中的下标,只是这个下标是倒着排列</div><div class="line">计算公式:  2^5*1 + 2^4*1 + 2^3*0 + 2^2*1 + 2^1*0 + 2^0*1  //这里的^5表示2的5次方，其他类推</div><div class="line">计算结果:  32 + 16 + 0 + 4 + 0 + 1 = 53    //2^0等于1</div></pre></td></tr></table></figure></p>
+<h4 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h4><p>现在需要把110101转为十进制，那么需要怎么转换呢？只需要如下进行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  1  0  1  0  1   //我们把这个要转换的拉开，想象成数组</div><div class="line">数据下标:  5  4  3  2  1  0   //下面的是数字在数组中的下标，只是这个下标是倒着排列</div><div class="line">计算公式:  2^5*1 + 2^4*1 + 2^3*0 + 2^2*1 + 2^1*0 + 2^0*1  //这里的^5表示2的5次方，其他类推</div><div class="line">计算结果:  32 + 16 + 0 + 4 + 0 + 1 = 53    //2^0等于1</div></pre></td></tr></table></figure></p>
 <blockquote>
 <p>除0外，任何数字的0次方都等于1</p>
 </blockquote>
@@ -105,7 +148,7 @@
 <p>验证下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var a = 11066;</div><div class="line">a.toString(&apos;16&apos;);  //2b3a</div></pre></td></tr></table></figure></p>
 <p>计算的思路都是一致的。记住思路就可以了。</p>
 <p>至于十进制转十六进制道理也都是一样的。</p>
-<p>在JS中如果想把二进制转为十进制可以使用<code>parseInt</code>, 如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">parseInt(&apos;110101&apos;, 2)   //输出53  二进制转十进制</div><div class="line">parseInt(&apos;67&apos;, 8)       //输出55  八进制转十进制</div><div class="line">parseInt(&apos;aa&apos;, 16)      //输出170 十六进制转十进制</div><div class="line">parseInt(&apos;69&apos;, 8)       //输出6   猜猜为什么</div></pre></td></tr></table></figure></p>
+<p>在JS中如果想把二进制转为十进制可以使用<code>parseInt</code>， 如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">parseInt(&apos;110101&apos;, 2)   //输出53  二进制转十进制</div><div class="line">parseInt(&apos;67&apos;, 8)       //输出55  八进制转十进制</div><div class="line">parseInt(&apos;aa&apos;, 16)      //输出170 十六进制转十进制</div><div class="line">parseInt(&apos;69&apos;, 8)       //输出6   猜猜为什么</div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">

@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://mongoc.com/2016/12/08/进制之间转换/index.html">
 <meta property="og:site_name" content="透过问题看本质">
 <meta property="og:description" content="第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。">
-<meta property="og:updated_time" content="2016-12-08T11:18:59.000Z">
+<meta property="og:updated_time" content="2016-12-09T09:04:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="进制之间转换">
 <meta name="twitter:description" content="第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。">
@@ -54,7 +54,7 @@
       
         <p>第一篇文章想了想还是先介绍下进制之间的换算。这个东西是每个IT从业人员每天都接触的但是不一定每个人都说的清楚。首先我们从最常用的二进制说起。<br><a id="more"></a></p>
 <hr>
-<h4 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h4><p>现在需要把110101转为十进制，那么需要怎么转换呢？只需要如下进行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  1  0  1  0  1   //我们把这个要转换的拉开，想象成数组</div><div class="line">数据下标:  5  4  3  2  1  0   //下面的是数字在数组中的下标,只是这个下标是倒着排列</div><div class="line">计算公式:  2^5*1 + 2^4*1 + 2^3*0 + 2^2*1 + 2^1*0 + 2^0*1  //这里的^5表示2的5次方，其他类推</div><div class="line">计算结果:  32 + 16 + 0 + 4 + 0 + 1 = 53    //2^0等于1</div></pre></td></tr></table></figure></p>
+<h4 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h4><p>现在需要把110101转为十进制，那么需要怎么转换呢？只需要如下进行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">原始数据:  1  1  0  1  0  1   //我们把这个要转换的拉开，想象成数组</div><div class="line">数据下标:  5  4  3  2  1  0   //下面的是数字在数组中的下标，只是这个下标是倒着排列</div><div class="line">计算公式:  2^5*1 + 2^4*1 + 2^3*0 + 2^2*1 + 2^1*0 + 2^0*1  //这里的^5表示2的5次方，其他类推</div><div class="line">计算结果:  32 + 16 + 0 + 4 + 0 + 1 = 53    //2^0等于1</div></pre></td></tr></table></figure></p>
 <blockquote>
 <p>除0外，任何数字的0次方都等于1</p>
 </blockquote>
@@ -71,7 +71,7 @@
 <p>验证下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">var a = 11066;</div><div class="line">a.toString(&apos;16&apos;);  //2b3a</div></pre></td></tr></table></figure></p>
 <p>计算的思路都是一致的。记住思路就可以了。</p>
 <p>至于十进制转十六进制道理也都是一样的。</p>
-<p>在JS中如果想把二进制转为十进制可以使用<code>parseInt</code>, 如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">parseInt(&apos;110101&apos;, 2)   //输出53  二进制转十进制</div><div class="line">parseInt(&apos;67&apos;, 8)       //输出55  八进制转十进制</div><div class="line">parseInt(&apos;aa&apos;, 16)      //输出170 十六进制转十进制</div><div class="line">parseInt(&apos;69&apos;, 8)       //输出6   猜猜为什么</div></pre></td></tr></table></figure></p>
+<p>在JS中如果想把二进制转为十进制可以使用<code>parseInt</code>， 如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">parseInt(&apos;110101&apos;, 2)   //输出53  二进制转十进制</div><div class="line">parseInt(&apos;67&apos;, 8)       //输出55  八进制转十进制</div><div class="line">parseInt(&apos;aa&apos;, 16)      //输出170 十六进制转十进制</div><div class="line">parseInt(&apos;69&apos;, 8)       //输出6   猜猜为什么</div></pre></td></tr></table></figure></p>
 
       
 
