@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JS数组去重的16种写法-上 | 透过问题看本质</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="数组去重，很多面试都会遇到的问题，你能写出几种？这个问题我看到的时候，我想到三种，大部分人可能都是想到三种，只是可能每个人想到的三种不太一样。我搜索了下这个问题，中文结果中，大多人的三种都是一致的，不知道是不是因为都是相互参考的。我搜索了很多资料，整理出这份16种写法文章。
+这个篇幅里面只是记录有多少种，并不记录每种方法的性能，下一篇会分析测试每种的性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS数组去重的16种写法-上">
+<meta property="og:url" content="http://mongoc.com/2016/12/26/JS数组去重的16种写法-上/index.html">
+<meta property="og:site_name" content="透过问题看本质">
+<meta property="og:description" content="数组去重，很多面试都会遇到的问题，你能写出几种？这个问题我看到的时候，我想到三种，大部分人可能都是想到三种，只是可能每个人想到的三种不太一样。我搜索了下这个问题，中文结果中，大多人的三种都是一致的，不知道是不是因为都是相互参考的。我搜索了很多资料，整理出这份16种写法文章。
+这个篇幅里面只是记录有多少种，并不记录每种方法的性能，下一篇会分析测试每种的性能。">
+<meta property="og:updated_time" content="2016-12-26T03:49:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JS数组去重的16种写法-上">
+<meta name="twitter:description" content="数组去重，很多面试都会遇到的问题，你能写出几种？这个问题我看到的时候，我想到三种，大部分人可能都是想到三种，只是可能每个人想到的三种不太一样。我搜索了下这个问题，中文结果中，大多人的三种都是一致的，不知道是不是因为都是相互参考的。我搜索了很多资料，整理出这份16种写法文章。
+这个篇幅里面只是记录有多少种，并不记录每种方法的性能，下一篇会分析测试每种的性能。">
+  
+    <link rel="alternative" href="/atom.xml" title="透过问题看本质" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-JS数组去重的16种写法-上" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JS数组去重的16种写法-上
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2016/12/26/JS数组去重的16种写法-上/" class="article-date">
+  <time datetime="2016-12-26T01:47:08.000Z" itemprop="datePublished">2016-12-26</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>数组去重，很多面试都会遇到的问题，你能写出几种？这个问题我看到的时候，我想到三种，大部分人可能都是想到三种，只是可能每个人想到的三种不太一样。我搜索了下这个问题，中文结果中，大多人的三种都是一致的，不知道是不是因为都是相互参考的。我搜索了很多资料，整理出这份16种写法文章。</p>
+<p>这个篇幅里面只是记录有多少种，并不记录每种方法的性能，下一篇会分析测试每种的性能。<br><a id="more"></a></p>
+<hr>
+<p>运行环境: <code>Mac pro, OS10.11.6, nodejs4.4.5</code></p>
+<blockquote>
+<p> 这里16种写法的数组去重，整体可以分为3类：</p>
+<ol>
+<li>for循环辅助实现</li>
+<li>数组原生方法实现</li>
+<li>新api方法实现</li>
+</ol>
+</blockquote>
+<hr>
+<h4 id="for循环辅助实现"><a href="#for循环辅助实现" class="headerlink" title="for循环辅助实现"></a>for循环辅助实现</h4><ol>
+<li>第一种是大家最长想到的一种利用<code>indexOf</code>实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line"></div><div class="line">var res = [];</div><div class="line">for (var i = 0; i &lt; arr.length; i++) &#123;</div><div class="line">    if (res.indexOf(arr[i]) == -1) &#123;</div><div class="line">        res.push(arr[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此种方法利用<code>indexOf</code>判断当前项是否在新数组中存在，不存在就加入，然后返回新数组。</p>
+<ol>
+<li>第二种也是很容易想到的一个，利用两次<code>for</code>循环进行对比。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = [];</div><div class="line">for (var i = 0; i &lt; arr.length; i++) &#123;</div><div class="line">    var isExist = false;</div><div class="line">    for (var j = i + 1; j &lt; arr.length; j++) &#123;</div><div class="line">        if (arr[i] == arr[j]) &#123;</div><div class="line">            isExist = true;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    if (!isExist) &#123;</div><div class="line">        res.push(arr[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;h&quot;,&quot;b&quot;,&quot;g&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;a&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>利用<code>for</code>循环，把数组第一项逐个和后面的一项对比是否重复，不重复加入到新的数组中，返回新数组</p>
+<p>3.第三种常用的也长想到的也是利用<code>indexOf</code>.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = [arr[0]];</div><div class="line">for (var i = 1; i &lt; arr.length; i++) &#123;</div><div class="line">    if (arr.indexOf(arr[i]) == i) &#123;</div><div class="line">        res.push(arr[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>此方法是利用当前数组中第<code>i</code>项的数值在当前数组中第一次出现的位置是不是<code>i</code>，如果不是就说明重复了。加入到新数组。这个是个很讨巧的方法。</p>
+<p>4.第四种利用对象的方式进行进行去重。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var tmp = &#123;&#125;;</div><div class="line">for (var m in arr) &#123;</div><div class="line">    tmp[arr[m]] = 1;</div><div class="line">&#125;</div><div class="line">var res = [];</div><div class="line">for (var n in tmp) &#123;</div><div class="line">    res.push(n);</div><div class="line">&#125;</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>此方法是利用对象的同名属性会被覆盖的特点处理，把数组中的所有项都作为对象的属性名，结果都一样(这里都是1)，然后重复的属性名会被覆盖，再把所有的属性循环出来放到新数组里面既可。</p>
+<p>5.先排序在再去重。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">arr.sort();</div><div class="line">var res = [arr[0]];</div><div class="line">for (var i = 1; i &lt; arr.length; i++) &#123;</div><div class="line">    if (arr[i] !== res[res.length - 1]) &#123;</div><div class="line">        res.push(arr[i]);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;bm&quot;,&quot;bx&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;git&quot;,&quot;h&quot;,&quot;o&quot;,&quot;p&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>此方法和第一个道理是一样的，只是先排序了。然后从原数组的第一个开始和新数组中的结果对比，看是否存在，不存在就加到新数组中。</p>
+<hr>
+<h4 id="数组原生方法实现"><a href="#数组原生方法实现" class="headerlink" title="数组原生方法实现"></a>数组原生方法实现</h4><p>6.利用数组原生的<code>filter</code>方法实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">arr.sort();</div><div class="line">var res = arr.filter(function(item, index) &#123;</div><div class="line">    if (item != arr[index - 1]) &#123;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;);</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;bm&quot;,&quot;bx&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;git&quot;,&quot;h&quot;,&quot;o&quot;,&quot;p&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>此方法是先排序把一致的都排在一起，然后在利用<code>filter</code>方法进行过滤，此方法返回<code>true</code>就表示返回当前项到新数组，返回<code>false</code>就表示啥都不添加到新数组。结果就是新数组。</p>
+<p><strong>1-6是大家想到的最多的几种方法，也是最常见的几种方法，我本身看到这个的时候也就想到了1，2，6这三种方法。但是上面这6种方法应该都是大家看到这种问题立即就能想到的。</strong></p>
+<p>7.此方法还是也是利用<code>filter</code>方法。但是它结合对象的方式真是很棒的一种思路。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var tmp = &#123;&#125;;</div><div class="line">var res = arr.filter(function(item) &#123;</div><div class="line">    return tmp.hasOwnProperty(item) ? false : (tmp[item] = true);</div><div class="line">&#125;);</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>这种方式其实是利用了第4和第6的结合，还是把项作为属性名放到对象中去把<code>true</code>作为值。也是很讨巧的方法。</p>
+<p>8.这种方法还是利用<code>filter</code>,只是更简洁了，其实后面的几种都是利用了<code>filter</code>方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = arr.filter(function(item, pos, self) &#123;</div><div class="line">    return self.indexOf(item) == pos;</div><div class="line">&#125;);</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>此方法利用数组<code>filter</code>方法的第三个参数，其实这里是否利用第三个参数完全可以说明你对此方法的理解，这里第三个参数是表面当前调用的数组，也就是这里的<code>arr</code>数组本身。他其实就是上面第3的变种。只是看起来很简洁。</p>
+<p>9.此种方法也可以看做是第6种方法的变种，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = arr.sort().filter(function(item, pos, self) &#123;</div><div class="line">    return !pos || item != self[pos - 1];</div><div class="line">&#125;)</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">result: [&quot;a&quot;,&quot;b&quot;,&quot;bm&quot;,&quot;bx&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;git&quot;,&quot;h&quot;,&quot;o&quot;,&quot;p&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>先排序，然后判断<code>pos</code>索引是否正常，再判断当前项是否和下一项一样，并且返回是否一样的结果。</p>
+<p><strong>上面这几种filter的使用，尤其是7，8，9这三种，这三种其实很能看出一个人的基础怎样？他们充分的把基础知识提现的很完美。很简洁的代码但是却让人一眼就看明白。这需要一定的功力。</strong></p>
+<hr>
+<h4 id="新api方法实现"><a href="#新api方法实现" class="headerlink" title="新api方法实现"></a>新api方法实现</h4><ol>
+<li>使用新的方法<code>from</code>和<code>Set</code>实现<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = Array.from(new Set(arr));</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这里其实主要是利用了<code>Set</code>。</p>
+<blockquote>
+<p>Set对象是值的集合，你可以按照插入的顺序迭代它的元素。 Set中的元素只会出现一次，即 Set 中的元素是唯一的。</p>
+</blockquote>
+<p>这里可以看出<code>Set</code>中的值都是唯一的不会重复的，这里就是先把数组转换到<code>Set</code>，因为<code>Set</code>也是个可以迭代的对象。所以在调用<code>from</code>。</p>
+<blockquote>
+<p>Array.from() 方法可以将一个类数组对象或可遍历对象转换成真正的数组。</p>
+</blockquote>
+<p>这是<code>from</code>的概述，而<code>Set</code>之后返回的就是一个可以迭代的对象，所以这里配合使用简直无敌了。</p>
+<ol>
+<li>使用<code>reduce</code>方法实现去重。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = arr.reduce(function(a, b) &#123;</div><div class="line">    if (a.indexOf(b) &lt; 0) a.push(b);</div><div class="line">    return a;</div><div class="line">&#125;, []);</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>理解此方式，其实就是要理解<code>reduce</code>。<code>reduce</code>的概述如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">语法：</div><div class="line"></div><div class="line">&gt; arr.reduce(callback,[initialValue])</div><div class="line"></div><div class="line">概述：</div><div class="line"></div><div class="line">&gt; 方法接收一个函数作为累加器（accumulator），数组中的每个值（从左到右）开始合并，最终为一个值</div><div class="line"></div><div class="line">参数如下：</div><div class="line"></div><div class="line">&gt; callback           执行数组中每个值的函数，包含四个参数</div><div class="line">&gt;     previousValue  上一次调用回调返回的值，或者是提供的初始值（initialValue）</div><div class="line">&gt;     currentValue   数组中当前被处理的元素</div><div class="line">&gt;     index          当前元素在数组中的索引</div><div class="line">&gt;     array          调用 reduce 的数组</div><div class="line">&gt; initialValue       作为第一次调用 callback 的第一个参数。</div></pre></td></tr></table></figure></p>
+<p>这里<code>a</code>表示每次回调调用返回的结果，<code>b</code>就是要处理的项，而空数组会作为第一的<code>a</code>传入，所以每次返回的<code>a</code>都是个数组，每次调用回调就判断数组中是否存在当前项<code>b</code>是否存在就行了。</p>
+<p>12.这个利用扩展语法。还是看代码吧，然后再解释。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var res = [...new Set(arr)];</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p><em>因为我的nodejs是4.4.5，所以运行这个时需要添加<code>harmony</code>参数</em></p>
+<p>扩展语法概述</p>
+<blockquote>
+<p> 扩展语法允许在需要多个参数（用于函数调用）或多个元素（用于数组文本）或多个变量（用于解构分配）的位置扩展表达式。</p>
+</blockquote>
+<p>总之就是他可以用于数组，将迭代器转换为数组，而<code>Set</code>返回的就是可一个可迭代的对象。这个其实和上面的第10是长不多的，只是看起来像是简写了。</p>
+<p>13.这个方式利用了<code>map</code>，<code>reduce</code>, <code>Object.keys</code>, <code>sort</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line">var uniq = arr</div><div class="line">    .map(function(name) &#123;</div><div class="line">        return &#123; count: 1, name: name &#125;</div><div class="line">    &#125;)</div><div class="line">    .reduce(function(a, b) &#123;</div><div class="line">        a[b.name] = (a[b.name] || 0) + b.count</div><div class="line">        return a</div><div class="line">    &#125;, &#123;&#125;)</div><div class="line"></div><div class="line">var res = Object.keys(uniq).sort(function(a, b) &#123;</div><div class="line">    return uniq[a] &lt; uniq[b] </div><div class="line">&#125;);</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;h&quot;,&quot;a&quot;,&quot;o&quot;,&quot;c&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;b&quot;,&quot;d&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>先说一句，如果非要让我给这段代码一句评价，那就是<code>这个逼装的beautiful</code>，毕竟能把逼装成这样也不容易。<br>首先利用<code>map</code>把数组改成对象数组，把每个对象多加一个<code>count</code>属性用于标记出现多少次，后面利用reduce把重复的项去除累加他们的<code>count</code>。<br>在用<code>Object.keys</code>返回对象的所有属性。<br>最后利用<code>sort</code>排序时根据<code>count</code>排序。</p>
+<p>这个里面利用了很多js原生的功能，虽说可以提现自己的功力，但是这逼装的有点过分。</p>
+<p>14.这个算是对上面的精简了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;, &apos;f&apos;, &apos;g&apos;, &apos;h&apos;, &apos;a&apos;, &apos;b&apos;, &apos;g&apos;, &apos;o&apos;, &apos;bm&apos;, &apos;a&apos;, &apos;p&apos;, &apos;bx&apos;, &apos;git&apos;, &apos;xb&apos;];</div><div class="line"></div><div class="line">var res = Object.keys(arr.reduce((p, c) =&gt; (p[c] = true, p), &#123;&#125;));</div><div class="line">console.log(&apos;result:&apos;, JSON.stringify(res));</div><div class="line">//result: [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;g&quot;,&quot;h&quot;,&quot;o&quot;,&quot;bm&quot;,&quot;p&quot;,&quot;bx&quot;,&quot;git&quot;,&quot;xb&quot;]</div></pre></td></tr></table></figure></p>
+<p>这个就不解释了，上面几个看了之后，这个也就一眼明了了，只是添加了箭头函数而已。</p>
+<hr>
+<p>本着透过问题看本质的想法。我搜索和整理了上面这些内容。虽说上面的内容有一些是略微重复，但是思路还是有的。至少下次别人问你数组去重你能想到几种的时候，你告诉我他可以想到14种不同的写法。</p>
+<p><strong>这次的整理和搜索的时候，也发现新的api真的是精简了太多太多的工作。而且js也越来越像个完整的语言了，虽说需要学习新版的api，但是有些地方我还是不是很喜欢的。我当时从Java到JS就是喜欢他的灵活多变的特点，结果她却越来越像Java了。</strong></p>
+<p>下一篇我会整理上面这14种方法的各个性能，这里只是介绍了各种方式，毕竟搞清楚各个的性能如何才能让我们装逼程度更上一层楼。</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/12/09/连续赋值中a-x等于几/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">连续赋值中a.x等于几?</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+      
+        <li><a href="/atom.xml" target="_blank"><i class="icon icon-rss"></i></a></li>
+      
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2016 MongoC 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/Alex-fun/hexo-theme-jane/" target="_blank">Jane</a>
+	</div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">RSS</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
