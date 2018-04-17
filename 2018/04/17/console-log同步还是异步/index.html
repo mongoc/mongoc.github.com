@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>console.log同步还是异步 | 透过问题看本质</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。">
+<meta name="keywords" content="JavaScript,基础,Nodejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="console.log同步还是异步">
+<meta property="og:url" content="http://mongoc.com/2018/04/17/console-log同步还是异步/index.html">
+<meta property="og:site_name" content="透过问题看本质">
+<meta property="og:description" content="每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。">
+<meta property="og:updated_time" content="2018-04-17T13:25:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="console.log同步还是异步">
+<meta name="twitter:description" content="每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。">
+  
+    <link rel="alternative" href="/atom.xml" title="透过问题看本质" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <div class="outer">
+        <section id="main"><article id="post-console-log同步还是异步" class="article article-type-post" itemscope itemprop="blogPost">
+  
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      console.log同步还是异步
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      <a href="/2018/04/17/console-log同步还是异步/" class="article-date">
+  <time datetime="2018-04-17T12:35:26.000Z" itemprop="datePublished">2018-04-17</time>
+</a>
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。<br><a id="more"></a></p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">console 模块提供了一个简单的调试控制台，类似于 Web 浏览器提供的 JavaScript 控制台。</div><div class="line"></div><div class="line">该模块导出了两个特定的组件：</div><div class="line"></div><div class="line">一个 Console 类，包含 console.log() 、 console.error() 和 console.warn() 等方法，可以被用于写入到任何 Node.js 流。</div><div class="line">一个全局的 console 实例，可被用于写入到 process.stdout 和 process.stderr。 全局的 console 使用时无需调用 require(&apos;console&apos;)。</div><div class="line">注意：全局的 console 对象的方法既不总是同步的（如浏览器中类似的 API），也不总是异步的（如其他 Node.js 流）。 详见 进程 I/O。</div></pre></td></tr></table></figure>
+<p>进程 I/O 内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">process.stdout and process.stderr 与 Node.js 中其他 streams 在重要的方面有不同:</div><div class="line"></div><div class="line">他们分别使用内部的 console.log() 和 console.error()。</div><div class="line">他们不能被关闭 (调用end()将会抛出异常)。</div><div class="line">他们永远不会触发 &apos;finish&apos; 事件。</div><div class="line">写操作是否为同步，取决于连接的是什么流以及操作系统是 Windows 还是 POSIX :</div><div class="line"></div><div class="line">&gt; Files: 同步 在 Windows 和 POSIX 下</div><div class="line">&gt; TTYs (Terminals): 异步 在 Windows 下， 同步 在 POSIX 下</div><div class="line">&gt; Pipes (and sockets): 同步 在 Windows 下， 异步 在 POSIX 下</div><div class="line">这些行为部分是历史原因，改变他们可能导致向后不兼容，而且他们的行为也符合部分用户的预期。</div><div class="line"></div><div class="line">同步写避免了调用 console.log() 或 console.error() 产生不符合预期的交错输出问题，或是在异步写完成前调用了process.exit()导致未写完整。 查看process.exit() 获取更多信息。</div><div class="line"></div><div class="line">警告: 同步写将会阻塞事件循环直到写完成。 有时可能一瞬间就能写到一个文件，但当系统处于高负载时，管道的接收端可能不会被读取、缓慢的终端或文件系统，因为事件循环被阻塞的足够频繁且足够长的时间，这些可能会给系统性能带来消极的影响。当你向一个交互终端会话写时这可能不是个问题，但当生产日志到进程的输出流时要特别留心。</div></pre></td></tr></table></figure>
+<p>比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const out = getStreamSomehow();</div><div class="line">const err = getStreamSomehow();</div><div class="line">const myConsole = new console.Console(out, err);</div><div class="line"></div><div class="line">myConsole.log(&apos;你好世界&apos;);</div><div class="line">// 打印: &apos;你好世界&apos;到 out。</div><div class="line">myConsole.log(&apos;你好%s&apos;, &apos;世界&apos;);</div></pre></td></tr></table></figure></p>
+<p>额外说一句，我们可以直接向标准输出中写入内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const fs = require(&apos;fs&apos;);</div><div class="line">const util = require(&apos;util&apos;);</div><div class="line"></div><div class="line">function debug(...args) &#123;</div><div class="line">  // use a function like this one when debugging inside an AsyncHooks callback</div><div class="line">  fs.writeSync(1, `$&#123;util.format(...args)&#125;\n`);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>参考:<br>(console)[<a href="http://nodejs.cn/api/console.html" target="_blank" rel="external">http://nodejs.cn/api/console.html</a>]<br>(process)[<a href="http://nodejs.cn/api/process.html#process_a_note_on_process_i_o" target="_blank" rel="external">http://nodejs.cn/api/process.html#process_a_note_on_process_i_o</a>]</p>
+
+      
+
+      
+        
+    </div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/07/18/ES6-Class介绍/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ES6:Class介绍</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        <aside id="sidebar">
+  <nav class="menus">
+  	<ul>
+  		<li><a href="/"><i class="icon icon-home"></i></a></li>
+  		
+			<li><a href="/archives"><i class="icon icon-fenlei"></i></a></li>
+  		
+  		
+			<li><a href="/tags"><i class="icon icon-tag"></i></a></li>
+  		
+  		
+      
+        <li><a href="/atom.xml" target="_blank"><i class="icon icon-rss"></i></a></li>
+      
+  	</ul>
+  </nav>
+  <a id="go-top" href="#"><i class="icon icon-up"></i></a>
+</aside>
+      </div>
+      <footer id="footer">
+  
+	<div id="footer-info" class="inner">
+	  &copy; 2018 MongoC 
+	  - Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	  - Theme <a href="https://github.com/Alex-fun/hexo-theme-jane/" target="_blank">Jane</a>
+	  - Blog Author <a href="https://github.com/mongoc/" target="_blank">MongoC</a>
+	</div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tag</a>
+  
+    <a href="/atom.xml" class="mobile-nav-link">RSS</a>
+  
+</nav>
+    
+
+<script src="//cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

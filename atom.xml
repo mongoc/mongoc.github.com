@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://mongoc.com/"/>
-  <updated>2016-12-26T08:55:09.000Z</updated>
+  <updated>2018-04-17T13:25:40.000Z</updated>
   <id>http://mongoc.com/</id>
   
   <author>
@@ -16,11 +16,62 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>console.log同步还是异步</title>
+    <link href="http://mongoc.com/2018/04/17/console-log%E5%90%8C%E6%AD%A5%E8%BF%98%E6%98%AF%E5%BC%82%E6%AD%A5/"/>
+    <id>http://mongoc.com/2018/04/17/console-log同步还是异步/</id>
+    <published>2018-04-17T12:35:26.000Z</published>
+    <updated>2018-04-17T13:25:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。<br><a id="more"></a></p>
+<hr>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">console 模块提供了一个简单的调试控制台，类似于 Web 浏览器提供的 JavaScript 控制台。</div><div class="line"></div><div class="line">该模块导出了两个特定的组件：</div><div class="line"></div><div class="line">一个 Console 类，包含 console.log() 、 console.error() 和 console.warn() 等方法，可以被用于写入到任何 Node.js 流。</div><div class="line">一个全局的 console 实例，可被用于写入到 process.stdout 和 process.stderr。 全局的 console 使用时无需调用 require(&apos;console&apos;)。</div><div class="line">注意：全局的 console 对象的方法既不总是同步的（如浏览器中类似的 API），也不总是异步的（如其他 Node.js 流）。 详见 进程 I/O。</div></pre></td></tr></table></figure>
+<p>进程 I/O 内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">process.stdout and process.stderr 与 Node.js 中其他 streams 在重要的方面有不同:</div><div class="line"></div><div class="line">他们分别使用内部的 console.log() 和 console.error()。</div><div class="line">他们不能被关闭 (调用end()将会抛出异常)。</div><div class="line">他们永远不会触发 &apos;finish&apos; 事件。</div><div class="line">写操作是否为同步，取决于连接的是什么流以及操作系统是 Windows 还是 POSIX :</div><div class="line"></div><div class="line">&gt; Files: 同步 在 Windows 和 POSIX 下</div><div class="line">&gt; TTYs (Terminals): 异步 在 Windows 下， 同步 在 POSIX 下</div><div class="line">&gt; Pipes (and sockets): 同步 在 Windows 下， 异步 在 POSIX 下</div><div class="line">这些行为部分是历史原因，改变他们可能导致向后不兼容，而且他们的行为也符合部分用户的预期。</div><div class="line"></div><div class="line">同步写避免了调用 console.log() 或 console.error() 产生不符合预期的交错输出问题，或是在异步写完成前调用了process.exit()导致未写完整。 查看process.exit() 获取更多信息。</div><div class="line"></div><div class="line">警告: 同步写将会阻塞事件循环直到写完成。 有时可能一瞬间就能写到一个文件，但当系统处于高负载时，管道的接收端可能不会被读取、缓慢的终端或文件系统，因为事件循环被阻塞的足够频繁且足够长的时间，这些可能会给系统性能带来消极的影响。当你向一个交互终端会话写时这可能不是个问题，但当生产日志到进程的输出流时要特别留心。</div></pre></td></tr></table></figure>
+<p>比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const out = getStreamSomehow();</div><div class="line">const err = getStreamSomehow();</div><div class="line">const myConsole = new console.Console(out, err);</div><div class="line"></div><div class="line">myConsole.log(&apos;你好世界&apos;);</div><div class="line">// 打印: &apos;你好世界&apos;到 out。</div><div class="line">myConsole.log(&apos;你好%s&apos;, &apos;世界&apos;);</div></pre></td></tr></table></figure></p>
+<p>额外说一句，我们可以直接向标准输出中写入内容：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">const fs = require(&apos;fs&apos;);</div><div class="line">const util = require(&apos;util&apos;);</div><div class="line"></div><div class="line">function debug(...args) &#123;</div><div class="line">  // use a function like this one when debugging inside an AsyncHooks callback</div><div class="line">  fs.writeSync(1, `$&#123;util.format(...args)&#125;\n`);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>参考:<br>(console)[<a href="http://nodejs.cn/api/console.html" target="_blank" rel="external">http://nodejs.cn/api/console.html</a>]<br>(process)[<a href="http://nodejs.cn/api/process.html#process_a_note_on_process_i_o" target="_blank" rel="external">http://nodejs.cn/api/process.html#process_a_note_on_process_i_o</a>]</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;每次面试都会问面试者在node中console是同步还是异步，但是很多面试人员都很难回答上来。就算回答上来也会说是异步吧，同步吧。其实这个问题社区里面也有很多人争论，但其实这个文档node的文档中已经给出了详细的解释。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="JavaScript" scheme="http://mongoc.com/tags/JavaScript/"/>
+    
+      <category term="基础" scheme="http://mongoc.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Nodejs" scheme="http://mongoc.com/tags/Nodejs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ES6:Class介绍</title>
+    <link href="http://mongoc.com/2017/07/18/ES6-Class%E4%BB%8B%E7%BB%8D/"/>
+    <id>http://mongoc.com/2017/07/18/ES6-Class介绍/</id>
+    <published>2017-07-18T03:35:03.000Z</published>
+    <updated>2017-07-18T03:57:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>废话不多写，直接上内容。<br><a id="more"></a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;废话不多写，直接上内容。&lt;br&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>JS数组去重的16种写法-下</title>
     <link href="http://mongoc.com/2016/12/26/JS%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D%E7%9A%8416%E7%A7%8D%E5%86%99%E6%B3%95-%E4%B8%8B/"/>
     <id>http://mongoc.com/2016/12/26/JS数组去重的16种写法-下/</id>
     <published>2016-12-26T08:21:08.000Z</published>
-    <updated>2016-12-26T08:55:09.000Z</updated>
+    <updated>2016-12-26T09:17:11.000Z</updated>
     
     <content type="html"><![CDATA[<p>上篇介绍了JS数组去重的16种写法，虽然只有14种。这里接着上篇记录下每种写法所消耗的时间。分析下那种方法是合适的。</p>
 <p>这里从网上下载了一本英文小说，从里面复制了一段处理之后，数组的长度是22442。这就是我们的测试数据。</p>
@@ -60,7 +111,7 @@
     <link href="http://mongoc.com/2016/12/26/JS%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D%E7%9A%8416%E7%A7%8D%E5%86%99%E6%B3%95-%E4%B8%8A/"/>
     <id>http://mongoc.com/2016/12/26/JS数组去重的16种写法-上/</id>
     <published>2016-12-26T01:47:08.000Z</published>
-    <updated>2016-12-26T08:18:27.000Z</updated>
+    <updated>2017-04-27T08:18:12.000Z</updated>
     
     <content type="html"><![CDATA[<p>数组去重，很多面试都会遇到的问题，你能写出几种？这个问题我看到的时候，我想到三种，大部分人可能都是想到三种，只是可能每个人想到的三种不太一样。我搜索了下这个问题，中文结果中，大多人的三种都是一致的，不知道是不是因为都是相互参考的。我搜索了很多资料，整理出这份16种写法文章。</p>
 <p>这个篇幅里面只是记录有多少种，并不记录每种方法的性能，下一篇会分析测试每种的性能。<br><a id="more"></a></p>
@@ -188,7 +239,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是&lt;a href=&quot;http://www.cnblogs.com/xxcanghai/p/4998076.html&quot;&gt;原文地址&lt;/a&gt;，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。&lt;/p&gt;
+      &lt;p&gt;今天无意中看到一个有关连续赋值运算中a.x的运算结果问题，当时我看的时候我也计算错了。但是我看了作者的解释，作者也是参照了别人的结果给出的猜想。这是&lt;a href=&quot;http://www.cnblogs.com/xxcanghai/p/4998076.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;原文地址&lt;/a&gt;，说实话我不是完全赞同作者的猜想，所以搜索了更多的资料。这里我也记录下我的理解。&lt;/p&gt;
     
     </summary>
     
@@ -326,7 +377,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
     
     </summary>
     
