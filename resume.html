@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>About Dn9x</title>
+    <link rel="icon" href="favicon.png" type="image/ico" >
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+        body {
+        padding:50px;
+        font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color:#777;
+        font-weight:300;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+        color:#222;
+        margin:0 0 20px;
+        }
+
+        p, ul, ol, table, pre, dl {
+        margin:0 0 20px;
+        }
+
+        h1, h2, h3 {
+        line-height:1.1;
+        }
+
+        h1 {
+        font-size:28px;
+        }
+
+        h2 {
+        color:#393939;
+        }
+
+        h3, h4, h5, h6 {
+        color:#494949;
+        }
+
+        a {
+        color:#39c;
+        font-weight:400;
+        text-decoration:none;
+        }
+
+        a small {
+        font-size:11px;
+        color:#777;
+        margin-top:-0.6em;
+        display:block;
+        }
+
+        .wrapper {
+        width:860px;
+        margin:0 auto;
+        }
+
+        blockquote {
+        border-left:1px solid #e5e5e5;
+        margin:0;
+        padding:0 0 0 20px;
+        font-style:italic;
+        }
+
+        code, pre {
+        font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
+        color:#333;
+        font-size:12px;
+        }
+
+        pre {
+        padding:8px 15px;
+        background: #f8f8f8;  
+        border-radius:5px;
+        border:1px solid #e5e5e5;
+        overflow-x: auto;
+        }
+
+        table {
+        width:100%;
+        border-collapse:collapse;
+        }
+
+        th, td {
+        text-align:left;
+        padding:5px 10px;
+        border-bottom:1px solid #e5e5e5;
+        }
+
+        dt {
+        color:#444;
+        font-weight:700;
+        }
+
+        th {
+        color:#444;
+        }
+
+        img {
+        max-width:100%;
+        }
+
+        header {
+        width:270px;
+        float:left;
+        position:fixed;
+        }
+
+        header ul {
+        list-style:none;
+        height:40px;
+        
+        padding:0;
+        
+        background: #eee;
+        background: -moz-linear-gradient(top, #f8f8f8 0%, #dddddd 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f8f8f8), color-stop(100%,#dddddd));
+        background: -webkit-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+        background: -o-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+        background: -ms-linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+        background: linear-gradient(top, #f8f8f8 0%,#dddddd 100%);
+        
+        border-radius:5px;
+        border:1px solid #d2d2d2;
+        box-shadow:inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
+        width:270px;
+        }
+
+        header li {
+        width:89px;
+        float:left;
+        border-right:1px solid #d2d2d2;
+        height:40px;
+        }
+
+        header ul a {
+        line-height:1;
+        font-size:11px;
+        color:#999;
+        display:block;
+        text-align:center;
+        padding-top:6px;
+        height:40px;
+        }
+
+        strong {
+        color:#222;
+        font-weight:700;
+        }
+
+        header ul li + li {
+        width:88px;
+        border-left:1px solid #fff;
+        }
+
+        header ul li + li + li {
+        border-right:none;
+        width:89px;
+        }
+
+        header ul a strong {
+        font-size:14px;
+        display:block;
+        color:#222;
+        }
+
+        section {
+        width:500px;
+        float:right;
+        padding-bottom:50px;
+        }
+
+        small {
+        font-size:11px;
+        }
+
+        hr {
+        border:0;
+        background:#e5e5e5;
+        height:1px;
+        margin:0 0 20px;
+        }
+
+        footer {
+        width:270px;
+        float:left;
+        position:fixed;
+        bottom:50px;
+        }
+
+        @media print, screen and (max-width: 960px) {
+        
+        div.wrapper {
+            width:auto;
+            margin:0;
+        }
+        
+        header, section, footer {
+            float:none;
+            position:static;
+            width:auto;
+        }
+        
+        header {
+            padding-right:320px;
+        }
+        
+        section {
+            border:1px solid #e5e5e5;
+            border-width:1px 0;
+            padding:20px 0;
+            margin:0 0 20px;
+        }
+        
+        header a small {
+            display:inline;
+        }
+        
+        header ul {
+            position:absolute;
+            right:50px;
+            top:52px;
+        }
+        }
+
+        @media print, screen and (max-width: 720px) {
+        body {
+            word-wrap:break-word;
+        }
+        
+        header {
+            padding:0;
+        }
+        
+        header ul, header p.view {
+            position:static;
+        }
+        
+        pre, code {
+            word-wrap:normal;
+        }
+        }
+
+        @media print, screen and (max-width: 480px) {
+        body {
+            padding:15px;
+        }
+        
+        header ul {
+            display:none;
+        }
+        }
+
+        @media print {
+        body {
+            padding:0.4in;
+            font-size:12pt;
+            color:#444;
+        }
+        }
+        .highlight  { background: #ffffff; }
+        .highlight .c { color: #999988; font-style: italic } /* Comment */
+        .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+        .highlight .k { font-weight: bold } /* Keyword */
+        .highlight .o { font-weight: bold } /* Operator */
+        .highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+        .highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+        .highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+        .highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+        .highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+        .highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+        .highlight .ge { font-style: italic } /* Generic.Emph */
+        .highlight .gr { color: #aa0000 } /* Generic.Error */
+        .highlight .gh { color: #999999 } /* Generic.Heading */
+        .highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+        .highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+        .highlight .go { color: #888888 } /* Generic.Output */
+        .highlight .gp { color: #555555 } /* Generic.Prompt */
+        .highlight .gs { font-weight: bold } /* Generic.Strong */
+        .highlight .gu { color: #800080; font-weight: bold; } /* Generic.Subheading */
+        .highlight .gt { color: #aa0000 } /* Generic.Traceback */
+        .highlight .kc { font-weight: bold } /* Keyword.Constant */
+        .highlight .kd { font-weight: bold } /* Keyword.Declaration */
+        .highlight .kn { font-weight: bold } /* Keyword.Namespace */
+        .highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+        .highlight .kr { font-weight: bold } /* Keyword.Reserved */
+        .highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+        .highlight .m { color: #009999 } /* Literal.Number */
+        .highlight .s { color: #d14 } /* Literal.String */
+        .highlight .na { color: #008080 } /* Name.Attribute */
+        .highlight .nb { color: #0086B3 } /* Name.Builtin */
+        .highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+        .highlight .no { color: #008080 } /* Name.Constant */
+        .highlight .ni { color: #800080 } /* Name.Entity */
+        .highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+        .highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+        .highlight .nn { color: #555555 } /* Name.Namespace */
+        .highlight .nt { color: #000080 } /* Name.Tag */
+        .highlight .nv { color: #008080 } /* Name.Variable */
+        .highlight .ow { font-weight: bold } /* Operator.Word */
+        .highlight .w { color: #bbbbbb } /* Text.Whitespace */
+        .highlight .mf { color: #009999 } /* Literal.Number.Float */
+        .highlight .mh { color: #009999 } /* Literal.Number.Hex */
+        .highlight .mi { color: #009999 } /* Literal.Number.Integer */
+        .highlight .mo { color: #009999 } /* Literal.Number.Oct */
+        .highlight .sb { color: #d14 } /* Literal.String.Backtick */
+        .highlight .sc { color: #d14 } /* Literal.String.Char */
+        .highlight .sd { color: #d14 } /* Literal.String.Doc */
+        .highlight .s2 { color: #d14 } /* Literal.String.Double */
+        .highlight .se { color: #d14 } /* Literal.String.Escape */
+        .highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+        .highlight .si { color: #d14 } /* Literal.String.Interpol */
+        .highlight .sx { color: #d14 } /* Literal.String.Other */
+        .highlight .sr { color: #009926 } /* Literal.String.Regex */
+        .highlight .s1 { color: #d14 } /* Literal.String.Single */
+        .highlight .ss { color: #990073 } /* Literal.String.Symbol */
+        .highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+        .highlight .vc { color: #008080 } /* Name.Variable.Class */
+        .highlight .vg { color: #008080 } /* Name.Variable.Global */
+        .highlight .vi { color: #008080 } /* Name.Variable.Instance */
+        .highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+
+        .type-csharp .highlight .k { color: #0000FF }
+        .type-csharp .highlight .kt { color: #0000FF }
+        .type-csharp .highlight .nf { color: #000000; font-weight: normal }
+        .type-csharp .highlight .nc { color: #2B91AF }
+        .type-csharp .highlight .nn { color: #000000 }
+        .type-csharp .highlight .s { color: #A31515 }
+        .type-csharp .highlight .sc { color: #A31515 }
+
+
+        #desc{
+            width: 100%;
+            height: auto;
+            z-index: 1;
+            padding: 10px;
+            line-height: 24px;
+        }
+        .cursor {
+            animation: blink 1s infinite steps(1, start);
+        }
+        @keyframes blink {
+            0%, 100% {
+                background-color: #000;
+                color: #aaa;
+            }
+            50% {
+                background-color: #bbb; 
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper" class="wrapper">
+        <header>
+            <h1>简历</h1>
+            <p><a href="https://github.com/Dn9x">齐先生</a></p>
+            <p><a href="https://github.com/Dn9x">https://github.com/Dn9x</a></p>
+        </header>
+        <section>
+            <div id="desc"></div>
+        </section>
+    </div>
+<script>
+    var infos = ['齐先生',
+        '男',
+        '31',
+        'xiuxu106@gmail.com',
+        '18018754304',
+        '面议',
+        '目前离职状态',
+        ' ',
+        '任职过5家公司',
+        '依次是: 佛罗米科技有限公司, 深圳市三叶虫信息科技有限公司, Wisdom Edition AS公司, 东莞精诚科技有限公司, 广州淘众福有限公司',
+        '和朋友创过业',
+        ' ',
+        '2017年2月份进入佛罗米科技有限公司，在职6年',
+        '该公司是一家金融科技公司',
+        '初到公司，公司没有专业前端团队，整个项目主要是C#',
+        '从0到1的组建前端团队和中间层团队，两个团队成员扩大到20+人',
+        '表现优秀多次获得最佳员工，最受欢迎员工，最佳项目奖',
+        '被公司提拔领导整个研发团队，团队成员60人左右',
+        '任职期间整个公司技术栈包括：大数据，运维，qt, golang, dotnet, nodejs, 前端, android, ios',
+        '期间多次负责主导公司的战略级项目订阅系统，钱包系统，榜单系统目前依旧稳定运行',
+        '任职期间培养出2位主管级别骨干',
+        '公司网站: https://www.followme.vip',
+        '详细的项目介绍可以面聊',
+        '目前集团进行团队重组，所以在寻找新的机会',
+        ' ',
+        '2016年进入深圳市三叶虫公司从事UI开发',
+        '该公司主营海外母婴商品',
+        '任职期间主要负责公司的微信店铺的UI开发',
+        '离职因为公司解散',
+        '目前公司项目已经解散无法查看，公司目前主要给jd，天猫等供货',
+        ' ',
+        '2014年进入挪威公司Wisdom Edition AS从事nodejs开发',
+        '该公司是一家主要从事儿童教育的外企公司',
+        '从进入公司之后，先后负责了公司的: ',
+        '在线购买系统开发',
+        '安卓版本主程序的cocos2d-html5开发',
+        '后台图书管理系统的维护(php)',
+        'GAPP后台的整个后台服务器开发和安卓端开发',
+        '公司要求员工出国，没有同意离职',
+        ' ',
+        '2012年进入东莞黄江精诚科技有限公司总部任职，在职23个月',
+        '该公司是从事电子行业生产的台资企业',
+        '在公司主要负责ERP方面的系统开发，如物料管理，船务管理，竞标系统等',
+        '在该公司的时候也负责带领新人和技术的讲解',
+        '使用的平台是.Net',
+        '在此期间自学了nodejs',
+        '因为想有更好的发展前景所以离职来了深圳',
+        ' ',
+        '2011年进入广州淘众福公司，在职7个月',
+        '该公司是一家初创的电商公司',
+        '在公司主要负责会员管理，订单管理和库存管理的系统开发',
+        '使用的技术是Java, HTML, CSS, JS',
+        '在职内见证了公司的成长，但因个人原因离职回东莞工作',
+        ' ',
+        '目前常用node, golang, js开发和解决项目问题',
+        '无障碍使用过的库和框架: ',
+        'Javascript, TypeScript, Nodejs, nestjs, gorm, openresty, docker, pg, redis等',
+        ' ',
+        '非常热爱开源',
+        '参与开源项目openbiz(nodejs版本)的更新和维护',
+        '参与开源项目nestjs(consul)模块的bugfix',
+        '对全栈式javascript开发很喜欢',
+        '了解node-webkit,算的上熟练,写过入门教程',
+        '开发了个人家庭记账系统，目前放在家里树莓派上运行',
+        '数据库可以无障碍的使用mongodb, mysql, pg最近几年一直使用pg',
+        '不同项目会使用不同的语言和技术栈，视需求而定',
+        '使用git, svn无障碍',
+        '熟练使用linux',
+        '目前环境mac',
+        '会翻墙',
+        '会使用ps切图',
+        '不喜欢做无用功',
+        '记不住太多方法和命令，习惯使用的时候看文档',
+        '可以阅读英文文档',
+        '喜欢写注释',
+        '喜欢折腾，喜欢简洁',
+        '喜欢浏览it方面的资讯',
+        '强烈的学习兴趣使我有很强的自学能力',
+        '面聊有惊喜'
+    ];
+
+    var desc = document.getElementById('desc');
+    var date = new Date();
+
+    desc.innerHTML = 'Last open: ' + date.toDateString() + ' on chrome<br/>MacBook-Pro:~ ';
+
+    var z = 0;
+    var k = 0;
+    
+    var timer = setInterval(function() {
+        if (z == infos.length) {
+            desc.innerHTML = desc.innerHTML + '<br/>MacBook-Pro:~ <i class="cursor">_</i>';
+            clearInterval(timer);
+            return;
+        }
+        var info = infos[z];
+        var str = info[k];
+
+        desc.innerText = desc.innerText + str;
+
+        k++;
+
+        if (k > info.length - 1) {
+            z++;
+            k = 0;
+            desc.innerHTML = desc.innerHTML + '<br/>MacBook-Pro:~ ';
+        }
+        
+        window.scrollTo(0, desc.scrollHeight+10);
+    }, 50);
+
+    
+</script>
+
+</body>
+</html>
